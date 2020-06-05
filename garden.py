@@ -10,3 +10,10 @@ def save_ir_plot(out_plot=None, color_map='Spectral'):
     else:
         return ir[0]
 
+def rgb(out_plot=None):
+    rgb = freenect.sync_get_video(0, freenect.VIDEO_RGB)
+    plt.imshow(rgb[0])
+    if out_plot:
+        plt.savefig(out_plot, bbox_inches='tight')
+    else:
+        return rgb[0]
