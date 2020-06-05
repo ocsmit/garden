@@ -6,3 +6,4 @@ Hardware: Microsoft KinectV1 | Raspberry Pi 4
 Dependencies: Python>=3.5 | OpenCV | Freenect
 
 Owen Smith (ocsmit.github.io)
+Zach Pilgrim
