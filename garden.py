@@ -55,13 +55,15 @@ def nir(outdir):
     # freenect.sync_stop()
 
     timeDate = get_time()
-    fileName = 'nir_%s' % timeDate
+    fileName = 'ir_%s' % timeDate
     out = '%s/%s' % (outdir, fileName)
 
-    plt.imsave(out, ir[0], format='png')
+    tmp = ir[0]
+
+    plt.imsave(out, ir[:,:,0], format='png')
     freenect.sync_stop()
 
-    print('NIR Saved')
+    print('IR Saved')
 
 def rgb(outdir):
     '''
@@ -71,13 +73,15 @@ def rgb(outdir):
     # freenect.sync_stop()
 
     timeDate = get_time()
-    fileName = 'rgb_%s' % timeDate
+    fileName = 'red_%s' % timeDate
     out = '%s/%s' % (outdir, fileName)
 
-    plt.imsave(out, rgb[0], format='png')
+    full_img = rgb[0]
+
+    plt.imsave(out, rgb[:,:,0], format='png')
     freenect.sync_stop()
 
-    print('RGB saved')
+    print('Red Band saved')
 
 def get_band(arr, band):
     out_arr = []
