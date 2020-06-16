@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from datetime import datetime
 from PIL import Image
 
-out_dir = "/home/pi/garden_out"
+out_dir = "/home/pi/garden/results"
 
 def init_kinect(*args):
     '''
