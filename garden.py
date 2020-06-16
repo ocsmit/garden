@@ -9,6 +9,14 @@ from PIL import Image
 out_dir = "/home/pi/garden_out"
 
 def init_kinect(*args):
+    '''
+    Function to initialize kinect and remove connection to kinect when finished
+    processing.
+
+    *args:
+            'on'
+            'off'
+    '''
     if args == 'on':
         context = freenect.init()
         kinect = freenect.open_device(context, 0)
@@ -17,36 +25,59 @@ def init_kinect(*args):
         freenect.shutdown(kinect)
 
 def depth_switch(*args):
+    '''
+    function to switch depth sensor on or off.
+
+    *args:
+            'on'
+            'off'
+
+    '''
     if args == 'on':
         freenect.start_depth(depthSensor)
     if args == 'off':
         freenect.stop_depth(depthSensor)
 
 def get_time():
+    '''
+    Function to get time and date and format a png file name.
+    '''
     now = datetime.now()
     time = now.strftime("%H%M")
     date = now.strftime("%m%d%Y")
     return "%s_%s.png" % (time, date)
 
-def nir(outdir=None, color_map='Spectral'):
-    ir = freenect.sync_get_video(0, freenect.VIDEO_IR_10BIT)
-    freenect.sync_stop()
+def nir(outdir):
+    '''
+    Function to take NIR band picture.
+    '''
+    ir = freenect.sync_get_video(0, freenect.VIDEO_IR_8BIT)
+    # freenect.sync_stop()
 
     timeDate = get_time()
     fileName = 'nir_%s' % timeDate
     out = '%s/%s' % (outdir, fileName)
 
     plt.imsave(out, ir[0], format='png')
-
-def rgb(outdir=None):
-    rgb = freenect.sync_get_video(0, freenect.VIDEO_RGB)
     freenect.sync_stop()
+
+    print('NIR Saved')
+
+def rgb(outdir):
+    '''
+    Function to take RGB picture.
+    '''
+    rgb = freenect.sync_get_video(0, freenect.VIDEO_RGB)
+    # freenect.sync_stop()
 
     timeDate = get_time()
     fileName = 'rgb_%s' % timeDate
     out = '%s/%s' % (outdir, fileName)
 
     plt.imsave(out, rgb[0], format='png')
+    freenect.sync_stop()
+
+    print('RGB saved')
 
 def get_band(arr, band):
     out_arr = []
@@ -60,3 +91,4 @@ if __name__ == "__main__":
     rgb(outdir=out_dir)
     nir(outdir=out_dir)
     init_kinect('off')
+
