@@ -40,7 +40,7 @@ def depth_switch(*args):
 
 def get_time():
     '''
-    Function to get time and date and format a png file name.
+    Function to get time and date and format a tif file name.
     '''
     now = datetime.now()
     time = now.strftime("%H%M")
@@ -74,9 +74,10 @@ def rgb(outdir):
     fileName = 'red_%s' % timeDate
     out = '%s/%s' % (outdir, fileName)
 
-    img = Image.fromarray(rgb[0])
+    tmp_array = rgb[0]
+
+    img = Image.fromarray(rgb[:,:,0])
     img.save(out)
-    #plt.imsave(out, full_img[:,:,0], format='png')
     freenect.sync_stop()
 
     print('Red Band saved')
