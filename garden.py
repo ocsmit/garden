@@ -45,7 +45,7 @@ def get_time():
     now = datetime.now()
     time = now.strftime("%H%M")
     date = now.strftime("%m%d%Y")
-    return "%s_%s.png" % (time, date)
+    return "%s_%s.tif" % (time, date)
 
 def nir(outdir):
     '''
@@ -58,9 +58,8 @@ def nir(outdir):
     fileName = 'ir_%s' % timeDate
     out = '%s/%s' % (outdir, fileName)
 
-    full_img = ir[0]
-
-    plt.imsave(out, full_img[:,:,0], format='png')
+    img = Image.fromarray(ir[0])
+    img.save(out)
     freenect.sync_stop()
 
     print('IR Saved')
@@ -70,15 +69,14 @@ def rgb(outdir):
     Function to take RGB picture.
     '''
     rgb = freenect.sync_get_video(0, freenect.VIDEO_RGB)
-    # freenect.sync_stop()
 
     timeDate = get_time()
     fileName = 'red_%s' % timeDate
     out = '%s/%s' % (outdir, fileName)
 
-    full_img = rgb[0]
-
-    plt.imsave(out, full_img[:,:,0], format='png')
+    img = Image.fromarray(rgb[0])
+    img.save(out)
+    #plt.imsave(out, full_img[:,:,0], format='png')
     freenect.sync_stop()
 
     print('Red Band saved')
