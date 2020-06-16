@@ -74,9 +74,9 @@ def rgb(outdir):
     fileName = 'red_%s' % timeDate
     out = '%s/%s' % (outdir, fileName)
 
-    tmp_array = rgb[0]
+    red = rgb[0]
 
-    img = Image.fromarray(rgb[:,:,0])
+    img = Image.fromarray(red[:,:,0])
     img.save(out)
     freenect.sync_stop()
 
