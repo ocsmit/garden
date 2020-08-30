@@ -8,86 +8,93 @@ from PIL import Image
 
 out_dir = "/home/pi/garden/results"
 
-def init_kinect(*args):
-    '''
-    Function to initialize kinect and remove connection to kinect when finished
-    processing.
+class Garden:
+    def __init__(self):
+        '''
+        Function to initialize kinect and remove connection to kinect when finished
+        processing.
 
-    *args:
+        *args:
             'on'
             'off'
-    '''
-    if args == 'on':
-        context = freenect.init()
-        kinect = freenect.open_device(context, 0)
-    if args == 'off':
-        freenect.close_device(kinect)
-        freenect.shutdown(kinect)
+        '''
+        init = freenect.init()
+        self.kinect = freenect.open_device(init, 0)
+        self.status = 1
 
-def depth_switch(*args):
-    '''
-    function to switch depth sensor on or off.
+    def switch(self):
+        freenect.close_device(self.kinect)
+        #freenect.shutdown(self.kinect)
+        self.status = 0
 
-    *args:
+    def depth_switch(self, *args):
+        '''
+        function to switch depth sensor on or off.
+
+        *args:
             'on'
             'off'
 
-    '''
-    if args == 'on':
-        freenect.start_depth(depthSensor)
-    if args == 'off':
-        freenect.stop_depth(depthSensor)
+        '''
+        if args == 'on':
+            freenect.start_depth(depthSensor)
+        if args == 'off':
+            freenect.stop_depth(depthSensor)
 
-def get_time():
-    '''
-    Function to get time and date and format a tif file name.
-    '''
-    now = datetime.now()
-    time = now.strftime("%H%M")
-    date = now.strftime("%m%d%Y")
-    return "%s_%s.tif" % (time, date)
+    def get_time(self):
+        '''
+        Function to get time and date and format a tif file name.
+        '''
+        now = datetime.now()
+        time = now.strftime("%H%M")
+        date = now.strftime("%m%d%Y")
+        return "%s_%s.tif" % (time, date)
 
-def nir(outdir):
-    '''
-    Function to take NIR band picture.
-    '''
-    ir = freenect.sync_get_video(0, freenect.VIDEO_IR_8BIT)
-    # freenect.sync_stop()
 
-    timeDate = get_time()
-    fileName = 'ir_%s' % timeDate
-    out = '%s/%s' % (outdir, fileName)
 
-    img = Image.fromarray(ir[0])
-    img.save(out)
-    freenect.sync_stop()
+    def nir(self, outdir):
+        '''
+        Function to take NIR band picture.
+        '''
+        ir = freenect.sync_get_video(0, freenect.VIDEO_IR_8BIT)
+        # freenect.sync_stop()
 
-    print('IR Saved')
+        timeDate = self.get_time()
+        fileName = 'ir_%s' % timeDate
+        out = '%s/%s' % (outdir, fileName)
 
-def rgb(outdir):
-    '''
-    Function to take RGB picture.
-    '''
-    rgb = freenect.sync_get_video(0, freenect.VIDEO_RGB)
+        img = Image.fromarray(ir[0])
+        img.save(out)
+        freenect.sync_stop()
 
-    timeDate = get_time()
-    fileName = 'red_%s' % timeDate
-    out = '%s/%s' % (outdir, fileName)
+        print('IR Saved')
 
-    red = rgb[0]
+    def rgb(self, outdir):
+        '''
+        Function to take RGB picture.
+        '''
+        rgb = freenect.sync_get_video(0, freenect.VIDEO_RGB)
 
-    img = Image.fromarray(red[:,:,0])
-    img.save(out)
-    freenect.sync_stop()
+        timeDate = get_time()
+        fileName = 'red_%s' % timeDate
+        out = '%s/%s' % (outdir, fileName)
 
-    print('Red Band saved')
+        red = rgb[0]
 
-def get_band(arr, band):
-    out_arr = []
-    for i in range(arr[0]):
-        for j in range(arr[1]):
-            out_arr.append(arr[i][j][band])
-    outArr = out_arr.reshape(arr.shape)
+        img = Image.fromarray(red[:,:,0])
+        img.save(out)
+        freenect.sync_stop()
+
+        print('Red Band saved')
+
+    def get_band(arr, band):
+        out_arr = []
+        for i in range(arr[0]):
+            for j in range(arr[1]):
+                out_arr.append(arr[i][j][band])
+        outArr = out_arr.reshape(arr.shape)
+
+
 
 if __name__ == "__main__":
     init_kinect('on')
